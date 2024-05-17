@@ -32,10 +32,10 @@ int llist_insert (llist_t * l, char c)
 
 int llist_remove_first (llist_t * l, char * p) 
 {
-	if (llist->first == NULL)
+	if (l->first == NULL)
 		return 0 ;
 
-	*p = llist->first->data ;
+	*p = l->first->data ;
 
 	llist_node_t * n = llist->first ;
 	llist->first = llist->first->next ;
