@@ -80,6 +80,8 @@ heap_top (heap_t * h, void * buf)
 int
 heap_pop (heap_t * h, void * buf)
 {
+	/* FIXME: fix this function for Task 1 */
+
 	if (h->size == 0)
 		return 0 ;
 
@@ -107,6 +109,8 @@ heap_pop (heap_t * h, void * buf)
 int
 heap_push (heap_t * h, void * buf) 
 {
+	/* FIXME: fix this function for Task 1 */
+
 	if (h->size == h->capacity) { 
 		return 0 ;
 	}
@@ -125,4 +129,16 @@ heap_push (heap_t * h, void * buf)
 	}
 
 	return 1 ;
+}
+
+int 
+heap_remove (heap_t * h, void * buf)
+
+// heap_remove eliminates an element in the heap 
+// if the element is equivalent to the element at buf.
+// This function returns 1 if an element is removed.
+// Otherwise, returns 0.
+
+{
+	/*TODO: Task 2*/
 }
