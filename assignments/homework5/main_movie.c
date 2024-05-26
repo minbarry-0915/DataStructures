@@ -62,9 +62,24 @@ movie_t movies[] = {
     {"Wild Child", 2008, 8},
     {"The Prestige", 2006, 10},
     {"The Visit", 2015, 9},
-    {"The Christmas Candle", 2013, 11}
+    {"The Christmas Candle", 2013, 11},
     {"Hugo", 2011, 11}
 } ;
+
+
+int compare_movies(void *a, void *b) {
+    movie_t *movie_A = (movie_t *)a;
+    movie_t *movie_B = (movie_t *)b;
+
+    if (movie_A->year != movie_B->year) {
+        return movie_A->year - movie_B->year;
+    }
+    if (movie_A->month != movie_B->month) {
+        return movie_A->month - movie_B->month;
+    }
+    return strcmp(movie_A->title, movie_B->title);
+}
+
 
 int 
 main ()
@@ -76,5 +91,21 @@ main ()
 	
 	/*TODO: revise this function for Task 3*/
 
+    int n = sizeof(movies) / sizeof(movie_t);
+    heap_t *h = heap_create(100, sizeof(movie_t), compare_movies);
+
+    for (int i = 0; i < n; i++) {
+        heap_push(h, &movies[i]);
+    }
+
+    movie_t movie;
+    while (heap_size(h) > 0) {
+        heap_pop(h, &movie);
+        //printf("%s (%d, %d)\n", movie.title, movie.year, movie.month);
+        printf("%d %d (%s)\n", movie.year, movie.month, movie.title);
+    }
+
+    heap_free(h);
+    
 	return 0 ;
 }
