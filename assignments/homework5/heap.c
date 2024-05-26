@@ -84,18 +84,29 @@ heap_pop (heap_t * h, void * buf)
 
 	if (h->size == 0)
 		return 0 ;
+	
+	if (h->size < h->capacity/4){
+		printf("\nRemaining elements: %d, The quarter of the capacity: %d\n", h->size, h->capacity/4);
+		printf("Halve the capacity\n");
+		h->capacity = h->capacity / 2;
+		h->arr = realloc(h->arr, (h->capacity+1)*h->usize);
+		printf("Current Heap Capacity: %d\n\n", h->capacity);
+	}
 
 	memcpy(buf, arr(h, 1), h->usize) ;
 
+	//가장 마지막에 있던 원소가 제일 앞으로 옴
 	swap(h, 1, h->size) ;
 	h->size-- ;
 
+	//트리 구조 재정렬
 	int i = 1 ;
+	//자식들 보다 클때
 	while ((left(i) <= h->size && cmp(h, i, left(i)) > 0) || 
 		right(i) <= h->size && cmp(h, i, right(i)) > 0) {
-
+		
 		int r = left(i) ;
-		if (right(i) <= h->size && cmp(h, left(i), right(i)) < 0) {
+		if (right(i) <= h->size && cmp(h, left(i), right(i)) > 0) {
 			r = right(i) ;
 		}
 
@@ -112,7 +123,10 @@ heap_push (heap_t * h, void * buf)
 	/* FIXME: fix this function for Task 1 */
 
 	if (h->size == h->capacity) { 
-		return 0 ;
+		printf("\nHeap is full\n");
+		h->capacity *= 2;
+		h->arr = realloc(h->arr, (h->capacity+1)*h->usize);
+		printf("Current Heap Capacity: %d\n\n", h->capacity);
 	}
 
 	h->size += 1 ;
@@ -141,4 +155,35 @@ heap_remove (heap_t * h, void * buf)
 
 {
 	/*TODO: Task 2*/
+	int index;
+	for(index = 1; index <= h->size; index++){
+		if(h->cmp(arr(h,index),buf) == 0){
+			//printf("found\n");
+			break;
+		}
+	}
+	if(index > h->size){
+		printf("Fail to Find\n");
+		return 0;
+	}
+	
+	swap(h, index, h->size);
+	h->size--;
+
+	//트리 구조 재정렬: 왼쪽이 무조건 오른쪽 보다 작게 만들어야됨
+	int i = 1 ;
+	//자식들 보다 클때
+	while ((left(i) <= h->size && cmp(h, i, left(i)) > 0) || 
+		right(i) <= h->size && cmp(h, i, right(i)) > 0) {
+		
+		int r = left(i) ;
+		if (right(i) <= h->size && cmp(h, left(i), right(i)) > 0) {
+			r = right(i) ;
+		}
+
+		swap(h, i, r) ;
+
+		i = r ;
+	}
+	return 1 ;
 }
