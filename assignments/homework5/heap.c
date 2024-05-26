@@ -95,7 +95,7 @@ heap_pop (heap_t * h, void * buf)
 
 	memcpy(buf, arr(h, 1), h->usize) ;
 
-	//가장 마지막에 있던 원소가 제일 앞으로 옴
+	//가장 마지막에 있던 원소가 제일 앞으로   옴
 	swap(h, 1, h->size) ;
 	h->size-- ;
 
