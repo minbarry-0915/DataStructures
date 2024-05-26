@@ -104,9 +104,12 @@ heap_pop (heap_t * h, void * buf)
 	//자식들 보다 클때
 	while ((left(i) <= h->size && cmp(h, i, left(i)) > 0) || 
 		right(i) <= h->size && cmp(h, i, right(i)) > 0) {
-		
-		int r = left(i) ;
-		if (right(i) <= h->size && cmp(h, left(i), right(i)) > 0) {
+
+		int r = i ;
+		if (left(i) <= h->size && cmp(h, r, left(i)) > 0) {
+			r = left(i) ;
+		}
+		if (right(i) <= h->size && cmp(h, r, right(i)) > 0) {
 			r = right(i) ;
 		}
 
