@@ -87,7 +87,7 @@ heap_pop (heap_t * h, void * buf)
 	
 	if (h->size < h->capacity/4){
 		printf("\nRemaining elements: %d, The quarter of the capacity: %d\n", h->size, h->capacity/4);
-		printf("Halve the capacity\n");
+		printf("Halving the capacity...\n");
 		h->capacity = h->capacity / 2;
 		h->arr = realloc(h->arr, (h->capacity+1)*h->usize);
 		printf("Current Heap Capacity: %d\n\n", h->capacity);
@@ -126,7 +126,7 @@ heap_push (heap_t * h, void * buf)
 	/* FIXME: fix this function for Task 1 */
 
 	if (h->size == h->capacity) { 
-		printf("\nHeap is full\n");
+		printf("\nHeap is full: Extending Current Capacity ... \n");
 		h->capacity *= 2;
 		h->arr = realloc(h->arr, (h->capacity+1)*h->usize);
 		printf("Current Heap Capacity: %d\n\n", h->capacity);

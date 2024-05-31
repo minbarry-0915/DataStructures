@@ -48,6 +48,7 @@ main ()
 	}
 
 	char* temp = "absent";
+	printf("Target: %s\n\n", temp);
 	heap_remove(h, &temp);
 	while (heap_size(h) > 0) {
 		char * s = 0x0 ;
