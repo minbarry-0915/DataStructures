@@ -7,6 +7,7 @@ typedef struct {
 	char data[64] ;
 } entry ;
 
+//키값만 비교
 int
 _cmp (void * p1, void * p2)
 {

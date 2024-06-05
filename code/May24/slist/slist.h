@@ -25,3 +25,6 @@ slist_pop (slist_t * heap, void * buf) ;
 
 int
 slist_push (slist_t * heap, void * buf) ;
+
+int 
+slist_reverse(slist_t * heap);

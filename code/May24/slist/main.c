@@ -20,6 +20,8 @@ int main ()
 	for (i = 0 ; inputs[i] != 0x0 ; i++) {
 		slist_push(l, &(inputs[i])) ;
 	}
+	slist_reverse(l);
+	
 
 	while (slist_size(l) > 0) {
 		char * s = 0x0 ;

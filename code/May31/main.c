@@ -16,13 +16,16 @@ cmp_string (void * e1, void * e2)
 	char * s1 = *((char **) e1) ;
 	char * s2 = *((char **) e2) ;
 
+	//한글자 한글자 비교
 	while (*s1 != 0x0 && *s2 != 0x0 && *s1 == *s2) {
 		s1++ ;
 		s2++ ;
 	}
+	//s2가 더길면
 	if (*s1 == 0x0 && *s2 != 0x0)
 		return -1 ;
 	
+	//s1이 더길면
 	if (*s1 != 0x0 && *s2 == 0x0)
 		return 1 ;
 
@@ -66,8 +69,8 @@ main ()
 	}
 	fclose(fp) ;
 
-	arraylist_sort(l, cmp_string) ;
-	//arraylist_qsort(l, cmp_string) ;
+	//arraylist_sort(l, cmp_string) ;
+	arraylist_qsort(l, cmp_string) ;
 	arraylist_print(l, print_string) ;
 	arraylist_free(l, free_string) ;
 }
