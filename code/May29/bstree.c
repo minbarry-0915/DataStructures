@@ -83,7 +83,7 @@ bst_insert (bst_t * t, void * data)
 	else {
 		n->parent = parent ;
 		//부모보다 작으면 왼쪽
-		if (t->cmp(data, n->parent->data) < 0) {
+		if (t->cmp(parent->data, n->data) > 0) {
 			n->parent->left = n ;
 		}
 		//부모보다 크면 오른쪽 

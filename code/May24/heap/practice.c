@@ -6,26 +6,26 @@
 heap_t *
 heap_create (int capacity, size_t usize, int (* cmp)(void *e1, void *e2)) 
 {
-	heap_t * h = malloc(sizeof(heap_t)) ;
-	h->arr = calloc(capacity + 1, usize) ;
-	h->capacity = capacity ;
-	h->size = 0 ;
-	h->usize = usize ;
-	h->cmp = cmp ;
-	return h ;
+	heap_t * h = (heap_t * )malloc(sizeof(heap_t));
+    h->arr = calloc(capacity+1,usize);
+    h->capacity = capacity;
+    h->size = 0;
+    h->usize = usize;
+    h->cmp = cmp;
+    return h;
 }
 
 void
 heap_free (heap_t * h) 
 {
-	free(h->arr) ;
-	free(h) ;
+    free(h->arr);
+    free(h);
 }
 
 int
 heap_size (heap_t * h)
 {
-	return h->size ;
+    return h->size;
 }
 
 int 
@@ -46,59 +46,65 @@ right(int i){
 void *
 arr (heap_t * h, int i)
 {
-	return h->arr + h->usize * i ;
+    return h->arr+ i * h->usize;
+}
+
+void
+swap (heap_t * h, int a, int b)
+{
+	char * tmp = (char *) malloc(h->usize) ;
+	memcpy(tmp, arr(h, a), h->usize) ;
+	memcpy(arr(h, a), arr(h, b), h->usize) ;
+	memcpy(arr(h, b), tmp, h->usize) ;
+	free(tmp) ;
 }
 
 int
 cmp (heap_t * h, int a, int b)
 {
-	return h->cmp(h->arr + a * h->usize, h->arr + b * h->usize) ;
+    return h->cmp(arr(h,a), arr(h,b));
 }
 
 int
 heap_top (heap_t * h, void * buf)
 {
-	if (h->size == 0)
-		return 0 ;
-	memcpy(buf, arr(h, 1), h->usize) ;
-	return 1 ;
+    if(h->size == 0){
+        return 0;
+    }
+	memcpy(buf, arr(h,1), h->usize);
+    return 1;
 }
 
 int
 heap_pop (heap_t * h, void * buf)
 {
-	if(h->size == 0){
-        return 0;
-    }
+	if (h->size == 0)
+		return 0 ;
+	
 
     memcpy(buf, arr(h,1), h->usize);
-    void* temp = malloc(h->usize);
-    memcpy(temp, arr(h,1), h->usize);
-    memcpy(arr(h,1),arr(h,h->size), h->usize);
-    memcpy(arr(h,h->size), temp, h->usize);
-    free(temp);
-    h->size--;
+    swap(h, 1, h->size);
+    h->size --;
 
-    int i = 1;
-    while((left(i) <= h->size && cmp(h, i, left(i))>0) ||
-    (right(i) <= h->size && cmp(h, i, right(i))>0)){
-        int r = i;
+	//트리 구조 재정렬
+	int i = 1 ;
+	//자식들 보다 클때
+	while ((left(i) <= h->size && cmp(h, i, left(i)) > 0) || 
+		right(i) <= h->size && cmp(h, i, right(i)) > 0) {
 
-        if(left(i) <= h->size && cmp(h, r, left(i))>0){
-            r = left(i);
-        }
-        if(right(i) <= h->size && cmp(h, r, right(i)) > 0){
-            r = right(i);
-        }
-        void * temp = malloc(h->usize);
-        memcpy(temp, arr(h, r), h->usize);
-        memcpy(arr(h,r), arr(h,i), h->usize);
-        memcpy(arr(h,i), temp, h->usize);
-        i = r;
-        free(temp);
-    }
-    return 1;
+		int r = i ;
+		if (left(i) <= h->size && cmp(h, r, left(i)) > 0) {
+			r = left(i) ;
+		}
+		if (right(i) <= h->size && cmp(h, r, right(i)) > 0) {
+			r = right(i) ;
+		}
 
+		swap(h, i, r) ;
+
+		i = r ;
+	}
+	return 1 ;
 }
 
 int
@@ -108,22 +114,20 @@ heap_push (heap_t * h, void * buf)
         return 0;
     }
 
-    h->size ++;
-    memcpy(arr(h,h->size), buf, h->usize);
-    int i;
-    for(i = h->size; i > 1; i=parent(i)){
-        if(cmp(h,parent(i),i) < 0){
-            break;
-        }
-        else{
-            void* temp = malloc(h->usize);
-            memcpy(temp, arr(h, parent(i)), h->usize);
-            memcpy(arr(h, parent(i)), arr(h,i), h->usize);
-            memcpy(arr(h,i), temp, h->usize);
-            free(temp);
-        }
-    }
-    return 1;
+    h->size += 1 ;
+	memcpy(arr(h, h->size), buf, h->usize) ;
+
+	int i ;
+	for (i = h->size ; i > 1 ; i = parent(i)) {
+		if (cmp(h, parent(i), i) < 0) {
+			break ;
+		}
+		else {
+			swap(h, parent(i), i) ;
+		}
+	}
+
+	return 1 ;
 }
 
 int 
@@ -134,5 +138,32 @@ heap_remove (heap_t * h, void * buf)
 // This function returns 1 if an element is removed.
 // Otherwise, returns 0.
 {
-    
+    if(h->size == 0)
+        return 0;
+
+    int i;
+    for(i = 1; i < h->size; i++){
+        if(h->cmp(h->arr + i * h->usize, buf) == 0)
+            break;
+    }
+
+    if(i >= h->size)
+        return 0;
+
+    swap(h, i, h->size);
+    h->size --;
+
+    i = 1;
+    while((left(i) <= h->size && cmp(h, i, left(i)) > 0) || (right(i) <= h->size && cmp(h, i, right(i)) > 0)){
+        int r = i;
+        if(left(i) <= h->size && cmp(h, r, left(i)) > 0){
+            r = left(i);
+        }
+        if(right(i) <= h->size && cmp(h, r, right(i)) > 0){
+            r = right(i);
+        }
+        swap(h, r, i);
+        i = r;
+    }
+    return 1;
 }
