@@ -22,6 +22,7 @@ main ()
 	for (i = 0 ; inputs[i] != 0x0 ; i++) {
 		heap_push(h, &(inputs[i])) ;
 	}
+	//heap_remove(h, &inputs[1]);
 
 	while (heap_size(h) > 0) {
 		char * s = 0x0 ;

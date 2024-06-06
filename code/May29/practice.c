@@ -5,9 +5,9 @@
 
 bst_t* 
 bst_create(size_t usize, int(*cmp)(void*e1, void*e2)){
-    bst_t* t = (bst_t*) malloc(sizeof(bst_t));
-    t->root = NULL;
+    bst_t* t = (bst_t*)malloc(sizeof(bst_t));
     t->cmp = cmp;
+    t->root = NULL;
     t->usize = usize;
     return t;
 }
@@ -15,10 +15,10 @@ bst_create(size_t usize, int(*cmp)(void*e1, void*e2)){
 bst_node_t *
 _bst_search (bst_t * t, void * data)
 {
-	bst_node_t* prev; 
-    bst_node_t* curr;
+	bst_node_t* prev, *curr;
     prev = NULL;
-    for(curr = t->root; curr != NULL && t->cmp(curr->data,data) != 0; ){
+
+    for(curr = t->root; curr!= NULL && t->cmp(curr->data, data) != 0; ){
         prev = curr;
         if(t->cmp(data, curr->data) < 0){
             curr = curr->left;
@@ -36,24 +36,24 @@ _bst_search (bst_t * t, void * data)
 
 int bst_insert(bst_t* t, void* data){
     bst_node_t* parent;
-    parent = _bst_search(t, data);
-    if(parent != NULL && t->cmp(parent->data, data) == 0){
-        return 0;
-    }
+    parent = _bst_search(t,data);
+    if (parent != NULL && t->cmp(parent->data, data) == 0)
+		return 0 ;
 
-    bst_node_t* n = (bst_node_t*)malloc(sizeof(bst_node_t));
+    bst_node_t * n = (bst_node_t*)malloc(sizeof(bst_node_t));
     n->data = (char*)malloc(t->usize);
-    memcpy(n->data, data, t->usize);
+    memcpy(n->data, data,t->usize);
     n->left = NULL;
     n->right = NULL;
 
     if(parent == NULL){
         t->root = n;
-        n->parent = NULL;
+        n->parent = NULL;    
     }
     else{
         n->parent = parent;
-        if(t->cmp(data, n->parent->data) < 0){
+
+        if(t->cmp(n->data, n->parent->data) < 0){
             n->parent->left = n;
         }
         else{
@@ -67,25 +67,24 @@ int bst_search(bst_t* t, void* data){
     bst_node_t* n;
 
     n = _bst_search(t, data);
-    if(n == NULL){
+    if(n == NULL || t->cmp(n->data,data) != 0){
         return 0;
     }
-    if(t->cmp(n->data, data) != 0){
-        return 0;
+    else{
+        memcpy(data,n->data,t->usize);
+        return 1;
     }
-
-    memcpy(data, n->data, t->usize);
-    return 1;
 }
 
 //pop
 int bst_remove(bst_t* t, void* data){
-    bst_node_t * n;
+    bst_node_t* n;
+    n = _bst_search(t,data);
 
-    n = _bst_search(t, data);
-    if(n == NULL || t->cmp(n->data,data) !=0){
+    if(n == NULL || t->cmp(n->data,data) != 0){
         return 0;
     }
+
     if(n->left == NULL){
         if(n->parent == NULL){
             t->root = n->right;
@@ -93,7 +92,6 @@ int bst_remove(bst_t* t, void* data){
                 n->right->parent = NULL;
             }
         }
-
         else if(n->parent->left == n){
             if(n->right != NULL){
                 n->right->parent = n->parent;
@@ -110,17 +108,21 @@ int bst_remove(bst_t* t, void* data){
         free(n);
         return 1;
     }
-    //왼쪽이 있을때,
-    bst_node_t* lmax = n->left;
+
+    //if n.left exists
+    bst_node_t* lmax;
+    lmax = n->left;
+    
     while(lmax->right != NULL){
         lmax = lmax->right;
     }
 
-    lmax->parent->right = lmax->left;
+    //found biggest one in left
+    lmax->parent->left = lmax->left;
     if(lmax->left != NULL){
         lmax->left->parent = lmax->parent;
     }
-    lmax->left = NULL;
+    lmax->left == NULL;
 
     lmax->parent = n->parent;
     if(n->parent == NULL){
@@ -132,7 +134,7 @@ int bst_remove(bst_t* t, void* data){
     else{
         n->parent->right = lmax;
     }
-    
+
     lmax->left = n->left;
     if(n->left != NULL){
         n->left->parent = lmax;
@@ -141,7 +143,6 @@ int bst_remove(bst_t* t, void* data){
     if(n->right != NULL){
         n->right->parent = lmax;
     }
-
     free(n->data);
     free(n);
     return 1;
@@ -149,27 +150,23 @@ int bst_remove(bst_t* t, void* data){
 
 void bst_node_print(bst_node_t * n, void(*print)(void* data)){
     printf("(");
-    if(n->left != NULL){
-        bst_node_print(n->left, print);
-    }
-    else{
+    if(n->left != NULL)
+        bst_node_print(n->left,print);
+    else
         printf("-");
-    }
     printf(",");
     print(n->data);
     printf(",");
-    if(n->right != NULL){
-        bst_node_print(n->right, print);
-    }
-    else{
+    if(n->right != NULL)
+        bst_node_print(n->right,print);
+    else
         printf("-");
-    }
     printf(")");
 }
 
 void bst_print(bst_t * t, void(*print)(void* data)){
     if(t->root != NULL){
-        bst_node_print(t->root,print);
+        bst_node_print(t->root, print);
     }
     printf("\n");
 }
@@ -187,6 +184,6 @@ void bst_node_free(bst_node_t* n){
 void bst_free(bst_t* t){ 
     if(t->root != NULL){
         bst_node_free(t->root);
-    }
+    }   
     free(t);
 }   

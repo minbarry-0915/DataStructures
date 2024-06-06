@@ -5,18 +5,21 @@
 
 arraylist_t * 
 arraylist_alloc (int unit) {
-    arraylist_t* l = (arraylist_t*)malloc(sizeof(arraylist_t));
+    arraylist_t* l;
+    l = (arraylist_t*)malloc(sizeof(arraylist_t));
     l->capacity = 10;
+    l->length = 0;
     l->unit = unit;
-    l->elements = (int*)calloc(l->capacity, l->unit);
+    l->elements = (int*) calloc(l->capacity,l->unit);
     return l;
 }
 
 void
 arraylist_free (arraylist_t * l, void (* free_element)(void * e)){
-    if(free_element != 0x0){
-        for(int i = 0; i < l->length; i++){
-            void* elem = l->elements + i*l->unit;
+    if(free_element != NULL){
+        int i;
+        for(i = 0; i < l->length; i++){
+            void* elem = l->elements + i * l->unit;
             free_element(elem);
         }
     }
@@ -31,8 +34,9 @@ arraylist_length (arraylist_t * l){
 
 void
 arraylist_print (arraylist_t * l, void (* print_element)(void * e)) {
-    if(print_element != 0x0){
-        for(int i= 0; i < l->length; i++){
+    if(print_element != NULL){
+        int i = 0;
+        for(i = 0; i < l->length; i++){
             void* elem = l->elements + i * l->unit;
             print_element(elem);
         }
@@ -43,13 +47,12 @@ void
 arraylist_insert_first (arraylist_t * l, void * e){
     if(l->length == l->capacity){
         l->capacity *= 2;
-        l->elements = (int*)realloc(l->elements,(size_t) l->capacity*l->unit);
+        l->elements = (int*)realloc(l->elements, l->capacity*l->unit);
     }
 
-    for(int i = l->length-1; i>= 0; i--){
-        memcpy(l->elements+(i+1) * l->unit, l->elements+ i* l->unit, l->unit);
+    for(int i = l->length - 1; i >= 0; i--){
+        memcpy(l->elements+(i+1)*l->unit, l->elements+ i * l->unit, l->unit);
     }
-
     memcpy(l->elements, e, l->unit);
     l->length ++;
 }
@@ -58,9 +61,8 @@ void
 arraylist_insert_last (arraylist_t * l, void * e){
     if(l->length == l->capacity){
         l->capacity *= 2;
-        l->elements = (int*)realloc(l->elements,(size_t)l->capacity*l->unit);
+        l->elements = (int*)realloc(l->elements, l->unit * l->capacity);
     }
-
     memcpy(l->elements+l->length*l->unit, e, l->unit);
     l->length++;
 }
@@ -71,11 +73,11 @@ arraylist_remove_first (arraylist_t * l, void * e){
         return 0;
     }
 
-    memcpy(e, l->elements, l->unit);
+    memcpy(e,l->elements,l->unit);
     for(int i = 1; i < l->length; i++){
-        memcpy(l->elements+(i-1)*l->unit,l->elements+i*l->unit, l->unit);
+        memcpy(l->elements+(i-1)*l->unit, l->elements+i * l->unit,l->unit);
     }
-    l->length --;
+    l->length--;
     return 1;
 }
 
@@ -85,8 +87,8 @@ arraylist_remove_last (arraylist_t * l, void * e) {
         return 0;
     }
 
-    memcpy(e,l->elements+(l->length-1)*l->unit,l->unit);
-    
+    memcpy(e,l->elements + (l->length-1) * l->unit, l->unit);
+
     l->length--;
     return 1;
 }
@@ -96,7 +98,8 @@ arraylist_get (arraylist_t * l, int pos, void * e){
     if(l->length <= pos){
         return 0;
     }
-    memcpy(e, l->elements+pos*l->unit, l->unit);
+
+    memcpy(e, l->elements+pos*l->unit,l->unit);
     return 1;
 }   
 
@@ -124,23 +127,22 @@ arraylist_sort (arraylist_t * l, int (* cmp_elements)(void * e1, void * e2)){
 
 void
 _arraylist_qsort (arraylist_t * l, int (* cmp_elements)(void * e1, void * e2), void * begin, void * end){
-    if(begin > end - l->unit){
+    if(begin >= end - l->unit){
         return;
     }
-
     int unit = l->unit;
-    void* t = malloc(sizeof(unit));
-
+    void* t = malloc(unit);
     void* pivot = begin;
-    void* lbound = begin+unit;
+    void* lbound = begin + unit;
     void* rbound = end - unit;
 
     while(lbound <= rbound){
-        while(lbound <= end - unit && cmp_elements(lbound, pivot) <= 0)
+        while(lbound <= end-unit && cmp_elements(lbound, pivot) <= 0){
             lbound += unit;
-
-        while(begin < rbound && cmp_elements(rbound, pivot) > 0)
+        }
+        while(rbound > begin && cmp_elements(pivot,rbound) < 0){
             rbound -= unit;
+        }
 
         if(lbound <= rbound){
             memcpy(t, lbound, unit);
@@ -151,19 +153,16 @@ _arraylist_qsort (arraylist_t * l, int (* cmp_elements)(void * e1, void * e2), v
         }
     }
 
-    //pivot update
     memcpy(t, rbound, unit);
     memcpy(rbound, pivot, unit);
     memcpy(pivot, t, unit);
-    free(t);
 
-    //recursion
     if(rbound != end-unit){
         _arraylist_qsort(l,cmp_elements, begin, rbound+unit);
         _arraylist_qsort(l, cmp_elements, rbound+unit, end);
     }
     else{
-        _arraylist_qsort(l, cmp_elements, begin, rbound);
+        _arraylist_qsort(l,cmp_elements,begin, rbound);
     }
 }
 

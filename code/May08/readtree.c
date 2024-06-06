@@ -20,7 +20,9 @@ read_a_tree (char *s)
 		return t ;
 	// *begin == '('
 	sub = begin + 1 ;
-	for (end = begin + 1, n = 0 ; n > 0 || *end != ')' ; end++) {
+	for (end = begin + 1, n = 0 ;
+	 n > 0 || *end != ')' ; 
+	 end++) {
 		if (*end == '(') {
 			n++ ;
 		}

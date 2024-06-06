@@ -59,12 +59,16 @@ tree_delete (tree_t * t)
 		tree_delete(t->next) ;
 	free(t) ;
 }
-*/
 
 int
 tree_height(tree_t * t) 
 {
-
+	int height = 1;
+	tree_t* i;
+	for(i = t->down; i != NULL; i = i->down){
+		height++;
+	}
+	return height;
 }
 
 
