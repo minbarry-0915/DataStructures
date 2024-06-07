@@ -6,13 +6,13 @@
 heap_t *
 heap_create (int capacity, size_t usize, int (* cmp)(void *e1, void *e2)) 
 {
-	heap_t * h = (heap_t * )malloc(sizeof(heap_t));
-    h->arr = calloc(capacity+1,usize);
-    h->capacity = capacity;
-    h->size = 0;
-    h->usize = usize;
-    h->cmp = cmp;
-    return h;
+	heap_t * h = malloc(sizeof(heap_t)) ;
+	h->arr = calloc(capacity + 1, usize) ;
+	h->capacity = capacity ;
+	h->size = 0 ;
+	h->usize = usize ;
+	h->cmp = cmp ;
+	return h ;
 }
 
 void
@@ -71,41 +71,36 @@ heap_top (heap_t * h, void * buf)
     if(h->size == 0){
         return 0;
     }
-	memcpy(buf, arr(h,1), h->usize);
+    memcpy(buf, arr(h,1), h->usize);
     return 1;
 }
 
 int
 heap_pop (heap_t * h, void * buf)
 {
-	if (h->size == 0)
-		return 0 ;
-	
+	if(h->size == 0)
+        return 0;
 
-    memcpy(buf, arr(h,1), h->usize);
+    memcpy(buf,arr(h,1),h->usize);
     swap(h, 1, h->size);
     h->size --;
 
-	//트리 구조 재정렬
-	int i = 1 ;
-	//자식들 보다 클때
-	while ((left(i) <= h->size && cmp(h, i, left(i)) > 0) || 
-		right(i) <= h->size && cmp(h, i, right(i)) > 0) {
+    int i = 1;
+    while((left(i) <= h->size && cmp(h, i, left(i)) < 0) || (right(i) <= h->size && cmp(h, i, right(i)) < 0)){
+        int r = i;
+        if(left(i) <= h->size && cmp(h, r, left(i)) < 0){
+            r = left(i);
+        }
+        if(right(i) <= h->size && cmp(h, r, right(i)) < 0){
+            r = right(i);
+        }
 
-		int r = i ;
-		if (left(i) <= h->size && cmp(h, r, left(i)) > 0) {
-			r = left(i) ;
-		}
-		if (right(i) <= h->size && cmp(h, r, right(i)) > 0) {
-			r = right(i) ;
-		}
-
-		swap(h, i, r) ;
-
-		i = r ;
-	}
-	return 1 ;
+        swap(h,r,i);
+        i = r;
+    }
+    return 1;
 }
+
 
 int
 heap_push (heap_t * h, void * buf) 
@@ -114,20 +109,17 @@ heap_push (heap_t * h, void * buf)
         return 0;
     }
 
-    h->size += 1 ;
-	memcpy(arr(h, h->size), buf, h->usize) ;
+    h->size ++;
+    memcpy(arr(h,h->size), buf, h->usize);
 
-	int i ;
-	for (i = h->size ; i > 1 ; i = parent(i)) {
-		if (cmp(h, parent(i), i) < 0) {
-			break ;
-		}
-		else {
-			swap(h, parent(i), i) ;
-		}
-	}
-
-	return 1 ;
+    for(int i = h->size; i > 1; i = parent(i)){
+        if(cmp(h, i, parent(i)) < 0)
+            break;
+        else{
+            swap(h,i,parent(i));
+        }
+    }
+    return 1;
 }
 
 int 
@@ -140,29 +132,28 @@ heap_remove (heap_t * h, void * buf)
 {
     if(h->size == 0)
         return 0;
-
-    int i;
-    for(i = 1; i < h->size; i++){
-        if(h->cmp(h->arr + i * h->usize, buf) == 0)
+    
+    int index;
+    for(index = 1; index < h->size; index++){
+        if(h->cmp(h->arr+index*h->usize, buf) == 0){
             break;
+        }
     }
+    //found 
+    swap(h,index,h->size);
+    h->size--;
 
-    if(i >= h->size)
-        return 0;
-
-    swap(h, i, h->size);
-    h->size --;
-
-    i = 1;
-    while((left(i) <= h->size && cmp(h, i, left(i)) > 0) || (right(i) <= h->size && cmp(h, i, right(i)) > 0)){
+    int i = 1;
+    while((left(i) <= h->size && cmp(h, i, left(i)) < 0) || (right(i) <= h->size && cmp(h, i, right(i)) < 0)){
         int r = i;
-        if(left(i) <= h->size && cmp(h, r, left(i)) > 0){
+        if(left(i) <= h->size && cmp(h, r, left(i)) < 0){
             r = left(i);
         }
-        if(right(i) <= h->size && cmp(h, r, right(i)) > 0){
+        if(right(i) <= h->size && cmp(h, r, right(i)) < 0){
             r = right(i);
         }
-        swap(h, r, i);
+
+        swap(h,r,i);
         i = r;
     }
     return 1;

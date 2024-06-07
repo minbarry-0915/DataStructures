@@ -74,21 +74,19 @@ int
 bintree_height(bintree_t * t) 
 {	
 	int max_height = 0;
-
-	if (t->left) {
-		int height ;
-		height = bintree_height(t->left) ;
-		if (max_height < height)
-			max_height = height ;
+	if(t->left){
+		int height;
+		height = bintree_height(t->left);
+		if(height > max_height)
+			max_height = height;
 	}
-	if (t->right) {
-		int height ;
-		height = bintree_height(t->right) ;
-		if (max_height < height)
-			max_height = height ;
+	if(t->right){
+		int height;
+		height = bintree_height(t->right);
+		if(height > max_height)
+			max_height = height;
 	}
-		
-	return max_height + 1 ;
+	return max_height + 1;
 }
 
 

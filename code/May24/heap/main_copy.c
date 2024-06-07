@@ -6,9 +6,9 @@
 int 
 string_cmp (void *e1, void *e2)
 {
-	char *s1 = *((char **)e1) ;
-	char *s2 = *((char **)e2);
-	return strcmp(s1, s2) ;
+	char* s1 = *(char**)e1;
+	char* s2 = *(char**)e2;
+	return strcmp(s1,s2);
 }
 
 int 

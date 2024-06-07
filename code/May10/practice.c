@@ -30,15 +30,14 @@ bintree_search (bintree_t * t, char key)
 {
     if(t->data == key)
         return t;
-
     bintree_t* r;
-	r = bintree_search(t->left, key);
-    if(r != NULL)
+    r = bintree_search(t->left, key);
+    if(r != NULL)   
         return r;
     r = bintree_search(t->right, key);
     if(r != NULL)
         return r;
-
+    
     return NULL;
 }
 
@@ -47,24 +46,21 @@ bintree_is_ancestor (bintree_t * t1 /*parent*/, bintree_t * t2/*child*/)
 {
 	if(t1->left == t2 || t1->right == t2)
         return 1;
+    
+    if(t1->left != NULL)
+        bintree_is_ancestor(t1->left,t2);
+    if(t1->right != NULL)
+        bintree_is_ancestor(t1->right, t2);
 
-    if(t1->left != NULL){
-        if(bintree_is_ancestor(t1->left, t2))
-            return 1;
-    }
-    if(t2->right != NULL){
-        if(bintree_is_ancestor(t1->right, t2))
-            return 1;
-    }
     return 0;
 }
 
 void
 bintree_delete (bintree_t * t)
 {
-    if(t->left)
+    if(t->left != NULL)
         bintree_delete(t->left);
-    if(t->right)
+    if(t->right != NULL)
         bintree_delete(t->right);
     free(t);
 }
@@ -74,18 +70,18 @@ int
 bintree_height(bintree_t * t) 
 {	
 	int max_height = 0;
-
-    if(t->left){
-        int height = bintree_height(t->left);
+    if(t->left != NULL){
+        int height = 0;
+        height = bintree_height(t->left);
         if(height > max_height)
             max_height = height;
     }
-    if(t->right){
-        int height = bintree_height(t->right);
+    if(t->right != NULL){
+        int height = 0;
+        height = bintree_height(t->right);
         if(height > max_height)
             max_height = height;
     }
-
     return max_height + 1;
 }
 
@@ -97,12 +93,14 @@ bintree_print (bintree_t * t)
     printf("(");
     if(t->left)
         bintree_print(t->left);
+    else
+        printf("-");
     printf(",");
-    printf("%c", t->data);
+    printf("%c",t->data);
     printf(",");
     if(t->right)
         bintree_print(t->right);
+    else
+        printf("-");
     printf(")");
-
-
 }
