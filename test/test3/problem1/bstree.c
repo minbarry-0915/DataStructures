@@ -81,6 +81,31 @@ int
 bst_to_array (bst_t * t, void * arr, int len) 
 {
 	/*TODO*/
+	if(t->root == NULL)
+		return 0;
+	bst_node_t* curr = t->root;
+	int i = 0;
+	while(curr->left != NULL){
+		curr = curr->left;
+	}
+	
+	memcpy(arr+i*t->usize, curr->data, t->usize);
+	i++;
+	for(curr; curr->parent != NULL; ){
+		curr = curr->parent;
+		memcpy(arr+i*t->usize, curr->data, t->usize);
+		i++;
+		curr = curr->right;
+		if(curr->right != NULL){
+			memcpy(arr+i*t->usize, curr->data, t->usize);
+			i++;
+		}
+		curr = curr->parent;
+	}
+	
+		
+	return 1;
+
 }
 
 int

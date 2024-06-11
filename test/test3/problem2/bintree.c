@@ -95,16 +95,55 @@ int
 bintree_nodes (bintree_t * t) 
 {
 	/*TODO*/
+	int	max_number = 0;
+	if(t->left != NULL){
+		int number = bintree_nodes(t->left);
+		max_number += number;
+	}
+	if(t->right != NULL){
+		int number = bintree_nodes(t->right);
+		max_number += number;
+	}
+	return max_number + 1;
 }
 
 int
 bintree_max (bintree_t * t, int * max)
 {
 	/*TODO*/
+	if(t->left != NULL)
+		bintree_max(t->left, max);
+	if(t->right != NULL)
+		bintree_max(t->right, max);
+	if(t->data > *max){
+		*max = t->data;
+		return 1;
+	}
+	else{
+		return 0;
+	}
 }
 
 int 
 bintree_is_full (bintree_t * t)
 {
 	/*TODO*/
+	int total_number = 0;
+	if(t->left != NULL && t->right != NULL){
+		total_number += 2;
+	}
+	if(t->left != NULL){
+		int number = bintree_is_full(t->left);
+		if(number == 2){
+			total_number += 2;
+		}
+	}
+	if(t->right != NULL){
+		int number = bintree_is_full(t->right);
+		if(number == 2)
+			total_number +=2;
+	}
+	if(total_number % 2 == 0)
+		return 1;
+	return 0;	
 }
