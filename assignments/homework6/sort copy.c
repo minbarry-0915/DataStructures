@@ -71,146 +71,20 @@ void insertion_sort ()
 
 	
 }
-void swap(int a, int b){
-	double temp = elements[a];
-	elements[a] = elements[b];
-	elements[b] = temp;
-}
-
-
-void heapify(int n, int i) { //n: element 갯수 i: 시작점
-    int largest = i; // 루트 노드
-    int left = 2 * i + 1; // 왼쪽 자식 노드
-    int right = 2 * i + 2; // 오른쪽 자식 노드
-
-    // 왼쪽 자식 노드가 루트보다 큰 경우
-    if (left < n && elements[left] > elements[largest])
-        largest = left;
-
-    // 오른쪽 자식 노드가 현재 가장 큰 노드보다 큰 경우
-    if (right < n && elements[right] > elements[largest])
-        largest = right;
-
-    // 가장 큰 노드가 루트가 아닌 경우
-    if (largest != i) {
-        swap(largest, i);
-
-        // 힙 구조 조정
-        heapify(n, largest);
-    }
-}
 
 void heap_sort ()
 {
 	/*TODO*/
-	//최대 힙 만들기 
-	for (int i = n_elements / 2 - 1; i >= 0; i--)
-        heapify(n_elements, i);
-
-	//힙에 제일 큰 값 꺼내서 배열 마지막에 박고 힙크기 줄여서 재정렬
-	for (int i = n_elements - 1; i >= 0 ; i--){
-		swap(i, 0);
-		heapify(i - 1, 0);
-	}
-
-}
-
-void _quick_sort (int begin, int end){
-	if(begin >= end - 1)
-		return;
-
-	//피봇, 왼쪽, 오른쪽 설정
-	int pivot = begin;
-	int lbound = begin + 1;
-	int rbound = end - 1;
-	
-	//교차하지 않을때 까지
-	while(lbound <= rbound){
-		//피봇보다 작은 수 찾음
-		while(lbound < end && elements[lbound] <= elements[pivot])
-			lbound ++;
-		//피봇보다 큰수 찾음
-		while(begin < rbound && elements[pivot] < elements[rbound])
-			rbound --;
-		//교차 안하면 둘의 위치 바꿈
-		if(lbound <= rbound){
-			swap(lbound,rbound);
-			lbound ++;
-			rbound --;
-		}		
-	}	
-	//교차하면: 더이상 피봇기준으로 바꿀게 없을때
-	// 피봇이랑 오른쪽 인덱스랑 바꿈
-	swap(pivot,rbound);
-	//오른쪽 인덱스번호가 배열의 끝이 아니면
-	if(rbound != end){
-		//정렬 계속 진행
-		_quick_sort(begin, rbound);
-		_quick_sort(rbound+1, end);
-	}
 }
 
 void quick_sort ()
 {
 	/*TODO*/
-	_quick_sort(0,n_elements);
-
-}
-
-double* merge (double* a, int n_a, double* b, int n_b){
-	double* c = malloc((n_a + n_b) * sizeof(double));
-
-	int n_c = n_a + n_b;
-
-	int top_a = 0;
-	int top_b = 0;
-
-	for(int i = 0; i < n_c; i++){
-		//b의 배열을 다썻거나 a배열을 다 안쓰고 a의 배열이 b의 배열 보다 작을때
-		if(top_b == n_b || (top_a < n_a && a[top_a] < b[top_b])){
-			c[i] = a[top_a];
-			top_a ++;
-		}
-		else{
-			c[i] = b[top_b];
-			top_b ++;
-		}
-	}
-	return c;
-}
-
-void _merge_sort(double* a, int n_a){
-	//0개이거나 1개이면 이미 정렬끝
-	if(n_a == 0 || n_a == 1)
-		return;
-
-	double* a1;
-	int n_a1;
-	double* a2;
-	int n_a2;
-
-	a1 = a;
-	n_a1 = n_a / 2;
-
-	a2 = a + n_a1;
-	n_a2 = n_a - n_a1;
-	
-	//재귀
-	_merge_sort(a1, n_a1);
-	_merge_sort(a2, n_a2);
-
-	double * a_sorted;
-
-	//재귀 끝나면 합치기
-	a_sorted = merge(a1, n_a1, a2, n_a2);
-	memcpy(a, a_sorted, n_a* sizeof(double));
-	free(a_sorted);
 }
 
 void merge_sort ()
 {
 	/*TODO*/
-	_merge_sort(elements, n_elements);
 }
 
 void sort ()
