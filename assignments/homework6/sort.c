@@ -110,7 +110,7 @@ void heap_sort ()
 	//힙에 제일 큰 값 꺼내서 배열 마지막에 박고 힙크기 줄여서 재정렬
 	for (int i = n_elements - 1; i >= 0 ; i--){
 		swap(i, 0);
-		heapify(i - 1, 0);
+		heapify(i, 0);
 	}
 
 }
@@ -154,7 +154,6 @@ void quick_sort ()
 {
 	/*TODO*/
 	_quick_sort(0,n_elements);
-
 }
 
 double* merge (double* a, int n_a, double* b, int n_b){
